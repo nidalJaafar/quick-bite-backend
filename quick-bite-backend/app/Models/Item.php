@@ -4,12 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class User extends Model
+class Item extends Model
 {
     use HasFactory;
+
+    public function menu(): BelongsTo
+    {
+        return $this->belongsTo(Menu::class);
+    }
 
     public function orders(): HasMany
     {
@@ -21,8 +26,8 @@ class User extends Model
         return $this->hasMany(ItemFeedback::class);
     }
 
-    public function visitFeedback(): HasOne
+    public function images(): HasMany
     {
-        return $this->hasOne(VisitFeedback::class);
+        return $this->hasMany(Image::class);
     }
 }
