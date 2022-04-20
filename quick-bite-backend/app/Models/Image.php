@@ -10,6 +10,8 @@ class Image extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     public function item() : BelongsTo {
         return $this->belongsTo(Item::class);
     }

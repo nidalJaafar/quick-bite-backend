@@ -10,6 +10,8 @@ class VisitFeedback extends Model
 {
     use HasFactory;
 
+    public $table = 'visit_feedbacks';
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

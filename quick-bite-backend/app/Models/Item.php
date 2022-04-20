@@ -11,6 +11,8 @@ class Item extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     public function menu(): BelongsTo
     {
         return $this->belongsTo(Menu::class);

@@ -11,6 +11,8 @@ class ItemFeedback extends Model
 {
     use HasFactory;
 
+    public $table = 'item_feedbacks';
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
