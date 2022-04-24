@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Currency;
+use App\Models\Faq;
 use App\Models\Image;
 use App\Models\Item;
 use App\Models\ItemFeedback;
@@ -30,5 +31,6 @@ class DatabaseSeeder extends Seeder
         ItemFeedback::factory(100)->create();
         Order::factory(50)->create();
         VisitFeedback::factory(10)->create();
+        Faq::factory(10)->create();
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\VisitFeedbackCollection;
+use App\Http\Resources\VisitFeedbackResource;
 use App\Models\VisitFeedback;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +17,8 @@ class VisitFeedbackController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(['visit_feedbacks' => VisitFeedback::all()]);
+        $visitFeedbacks = VisitFeedback::with('user')->get();
+        return response()->json(['visit_feedbacks' => new VisitFeedbackCollection($visitFeedbacks)]);
     }
 
     /**
@@ -38,8 +41,8 @@ class VisitFeedbackController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $visitFeedback = VisitFeedback::findOrFail($id);
-        return response()->json(['visit_feedback' => $visitFeedback]);
+        $visitFeedback = VisitFeedback::with('user')->findOrFail($id);
+        return response()->json(['visit_feedback' => new VisitFeedbackResource($visitFeedback)]);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ItemCollection;
+use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +17,8 @@ class ItemController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(['items' => Item::all()]);
+        $items = Item::all();
+        return response()->json(['items' => new ItemCollection($items)]);
     }
 
     /**
@@ -38,8 +41,8 @@ class ItemController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $item = Item::findOrFail($id);
-        return response()->json(['item' => $item]);
+        $item = Item::with('images', 'itemFeedbacks')->findOrFail($id);
+        return response()->json(['item' => new ItemResource($item)]);
     }
 
     /**

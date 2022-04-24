@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MenuCollection;
+use App\Http\Resources\MenuResource;
 use App\Models\Menu;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +17,8 @@ class MenuController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(['menus' => Menu::all()]);
+        $menus = Menu::with('items.images')->get();
+        return response()->json(['menus' => new MenuCollection($menus)]);
     }
 
     /**
@@ -38,8 +41,8 @@ class MenuController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $menu = Menu::findOrFail($id);
-        return response()->json(['menu' => $menu]);
+        $menu = Menu::with('items.images')->findOrFail($id);
+        return response()->json(['menu' => new MenuResource($menu)]);
     }
 
     /**

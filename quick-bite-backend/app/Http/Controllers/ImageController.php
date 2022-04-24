@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CollectionResource;
+use App\Http\Resources\ImageCollection;
+use App\Http\Resources\ImageResource;
 use App\Models\Image;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ImageController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +19,8 @@ class ImageController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(['images' => Image::all()]);
+        $images = Image::with('item')->get();
+        return response()->json(['images' => new ImageCollection($images)]);
     }
 
     /**
@@ -38,8 +43,8 @@ class ImageController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $image = Image::findOrFail($id);
-        return response()->json(['image' => $image]);
+        $image = Image::with('item')->findOrFail($id);
+        return response()->json(['image' => new ImageResource($image)]);
     }
 
     /**

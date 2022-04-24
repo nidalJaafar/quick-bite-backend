@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderCollection;
+use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +17,8 @@ class OrderController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(['orders' => Order::all()]);
+        $orders = Order::with('item.images', 'user')->get();
+        return response()->json(['orders' => new OrderCollection($orders)]);
     }
 
     /**
@@ -38,8 +41,8 @@ class OrderController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $order = Order::findOrFail($id);
-        return response()->json(['order' => $order]);
+        $order = Order::with('item.images', 'user')->findOrFail($id);
+        return response()->json(['order' => new OrderResource($order)]);
     }
 
     /**

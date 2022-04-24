@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CollectionResource;
+use App\Http\Resources\CurrencyResource;
 use App\Models\Currency;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +17,8 @@ class CurrencyController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(['currencies' => Currency::all()]);
+        $currencies = Currency::all();
+        return response()->json(['currencies' => new CollectionResource($currencies)]);
     }
 
     /**
@@ -39,7 +42,7 @@ class CurrencyController extends Controller
     public function show(int $id): JsonResponse
     {
         $currency = Currency::findOrFail($id);
-        return response()->json(['currency' => $currency]);
+        return response()->json(['currency' => new CurrencyResource($currency)]);
     }
 
     /**

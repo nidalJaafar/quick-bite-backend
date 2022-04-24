@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ItemFeedbackCollection;
+use App\Http\Resources\ItemFeedbackResource;
 use App\Models\ItemFeedback;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +17,8 @@ class ItemFeedbackController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(['item_feedbacks' => ItemFeedback::all()]);
+        $itemFeedbacks = ItemFeedback::with('user', 'item.images')->get();
+        return response()->json(['item_feedbacks' => new ItemFeedbackCollection($itemFeedbacks)]);
     }
 
     /**
@@ -38,8 +41,8 @@ class ItemFeedbackController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $itemFeedback = ItemFeedback::findOrFail($id);
-        return response()->json(['item_feedback' => $itemFeedback]);
+        $itemFeedback = ItemFeedback::with('user', 'item.images')->findOrFail($id);
+        return response()->json(['item_feedback' => new ItemFeedbackResource($itemFeedback)]);
     }
 
     /**

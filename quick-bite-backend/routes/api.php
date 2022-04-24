@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemFeedbackController;
@@ -8,7 +9,6 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisitFeedbackController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,8 +22,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/logout', [UserController::class, 'logout']);
 });
 
 Route::apiResources([
@@ -34,5 +34,10 @@ Route::apiResources([
     'item_feedbacks' => ItemFeedbackController::class,
     'menus' => MenuController::class,
     'orders' => OrderController::class,
-    'visit_feedbacks' => VisitFeedbackController::class
+    'visit_feedbacks' => VisitFeedbackController::class,
+    'faqs' => FaqController::class
 ]);
+
+Route::post('/login', [UserController::class, 'login']);
+
+

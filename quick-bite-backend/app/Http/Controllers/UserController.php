@@ -2,20 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return JsonResponse
-     */
-    public function index(): JsonResponse
+
+    public function login(Request $request): JsonResponse
     {
-        return response()->json(['users' => User::all()]);
+        //validate
+        $user = User::where('email', $request->email)->first();
+        if (!isset($user) || !Hash::check($request->password, $user->password))
+            throw new ModelNotFoundException();
+        return response()->json(['token' => $user->createToken('login_token')->plainTextToken]);
+    }
+
+    public function logout(): JsonResponse
+    {
+        auth()->user()->tokens()->delete();
+        return response()->json(status: 201);
     }
 
     /**
@@ -31,15 +41,14 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a listing of the resource.
      *
-     * @param int $id
      * @return JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function index(): JsonResponse
     {
-        $user = User::findOrFail($id);
-        return response()->json(['user' => $user]);
+        $users = User::with('itemFeedbacks.item.images', 'visitFeedback')->get();
+        return response()->json(['users' => new UserCollection($users)]);
     }
 
     /**
@@ -53,6 +62,18 @@ class UserController extends Controller
     {
         $this->setValues($request, User::findOrFail($id))->save();
         return response()->json(status: 204);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $user = User::with(['itemFeedbacks.item', 'visitFeedback'])->findOrFail($id);
+        return response()->json(['user' => new UserResource($user)]);
     }
 
     /**
