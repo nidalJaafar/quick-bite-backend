@@ -17,15 +17,15 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
-            'firstName' => $this->resource->first_name,
-            'lastName' => $this->resource->last_name,
+            'first_name' => $this->resource->first_name,
+            'last_name' => $this->resource->last_name,
             'email' => $this->resource->email,
             'password' => $this->resource->password,
             'role' => $this->resource->role,
-            'itemFeedbacks' => new ItemFeedbackCollection($this->whenLoaded('itemFeedbacks')),
-            'visitFeedback' => new VisitFeedbackResource($this->whenLoaded('visitFeedback')),
-            'createdAt' => $this->resource->created_at,
-            'updatedAt' => $this->resource->updated_at
+            'item_feedbacks' => new ItemFeedbackCollection($this->whenLoaded('itemFeedbacks')),
+            'visit_feedback' => new VisitFeedbackResource($this->whenLoaded('visitFeedback')),
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at
         ];
     }
 }

@@ -69,4 +69,11 @@ class FaqController extends Controller
         Faq::findOrFail($id)->destroy();
         return response()->json(status:204);
     }
+
+    private function setValues(Request $request, Faq $faq): Faq
+    {
+        $faq->question = $request->question;
+        $faq->answer = $request->answer;
+        return $faq;
+    }
 }

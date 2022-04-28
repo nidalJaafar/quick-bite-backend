@@ -20,8 +20,8 @@ class OrderResource extends JsonResource
             'status' => $this->resource->status,
             'user' => new UserResource($this->resource->user),
             'item' => new ItemResource($this->resource->item),
-            'createdAt' => $this->resource->created_at,
-            'updatedAt' => $this->resource->updated_at
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at
         ];
     }
 }

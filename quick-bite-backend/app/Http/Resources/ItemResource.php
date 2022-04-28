@@ -20,10 +20,10 @@ class ItemResource extends JsonResource
             'name' => $this->resource->name,
             'details' => $this->resource->details,
             'type' => $this->resource->type,
-            'basePrice' => $this->resource->base_price,
+            'base_price' => $this->resource->base_price,
             'sale' => $this->resource->sale,
-            'averageRating' => $this->resource->average_rating,
-            'isTrending' => $this->resource->is_trending,
+            'average_rating' => $this->resource->average_rating,
+            'is_trending' => $this->resource->is_trending,
             'images' => new ImageCollection($this->resource->images),
         ];
     }

@@ -21,8 +21,8 @@ class ItemFeedbackResource extends JsonResource
             'details' => $this->resource->details,
             'item' => new ItemResource($this->resource->item),
             'user' => new UserResource($this->whenLoaded('user')),
-            'createdAt' => $this->resource->created_at,
-            'updatedAt' => $this->resource->updated_at
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at
         ];
     }
 }
