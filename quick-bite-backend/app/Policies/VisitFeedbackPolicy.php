@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\VisitFeedback;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Auth\Access\Response;
 
 class VisitFeedbackPolicy
 {

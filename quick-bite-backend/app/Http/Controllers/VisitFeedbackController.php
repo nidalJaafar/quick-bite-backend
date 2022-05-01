@@ -82,7 +82,7 @@ class VisitFeedbackController extends Controller
     private function setValues(Request $request, VisitFeedback $visitFeedback): VisitFeedback
     {
         $this->validate($request);
-        $visitFeedback->user_id = $request->user_id;
+        $visitFeedback->user_id = auth()->user()->id;
         $visitFeedback->rating = $request->rating;
         $visitFeedback->details = $request->details;
         return $visitFeedback;
@@ -90,7 +90,6 @@ class VisitFeedbackController extends Controller
     private function validate(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id|integer',
             'rating' => 'required|min:0|max:5|integer',
             'details' => 'required|string',
         ]);

@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Auth\Access\Response;
 
 class OrderPolicy
 {
@@ -31,6 +30,7 @@ class OrderPolicy
      */
     public function view(User $user, Order $order): bool
     {
+        $order->load('user');
         return in_array($user->role, ['admin', 'super admin']) || $order->user->id == $user->id;
     }
 
@@ -54,6 +54,7 @@ class OrderPolicy
      */
     public function update(User $user, Order $order): bool
     {
+        $order->load('user');
         return $order->user->id == $user->id;
     }
 
@@ -66,7 +67,8 @@ class OrderPolicy
      */
     public function delete(User $user, Order $order): bool
     {
-        return $order->user->id == $user->id;
+        $order->load('user');
+        return $order->user->id == $user->id && $order->status == 'pending';
     }
 
     /**
@@ -78,7 +80,8 @@ class OrderPolicy
      */
     public function restore(User $user, Order $order): bool
     {
-        return $order->user->id == $user->id;
+        $order->load('user');
+        return $order->user->id == $user->id && $order->status == 'pending';
     }
 
     /**
@@ -90,6 +93,7 @@ class OrderPolicy
      */
     public function forceDelete(User $user, Order $order): bool
     {
-        return $order->user->id == $user->id;
+        $order->load('user');
+        return $order->user->id == $user->id && $order->status == 'pending';
     }
 }

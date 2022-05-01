@@ -84,7 +84,7 @@ class OrderController extends Controller
         $this->validate($request);
         $order->status = $request->status;
         $order->item_id = $request->item_id;
-        $order->user_id = $request->user_id;
+        $order->user_id = auth()->user()->id;
         return $order;
     }
 
@@ -92,8 +92,7 @@ class OrderController extends Controller
     {
         $request->validate([
             'status' => 'required|string|in:pending,delivered',
-            'item_id' => 'required|exists:items,id|integer',
-            'user_id' => 'required|exists:users,id|integer',
+            'item_id' => 'required|exists:items,id|integer'
         ]);
     }
 }

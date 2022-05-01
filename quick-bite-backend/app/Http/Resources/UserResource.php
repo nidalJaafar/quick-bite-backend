@@ -20,7 +20,6 @@ class UserResource extends JsonResource
             'first_name' => $this->resource->first_name,
             'last_name' => $this->resource->last_name,
             'email' => $this->resource->email,
-            'password' => $this->resource->password,
             'role' => $this->resource->role,
             'item_feedbacks' => new ItemFeedbackCollection($this->whenLoaded('itemFeedbacks')),
             'visit_feedback' => new VisitFeedbackResource($this->whenLoaded('visitFeedback')),

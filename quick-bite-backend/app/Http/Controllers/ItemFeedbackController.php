@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ItemFeedbackCollection;
 use App\Http\Resources\ItemFeedbackResource;
 use App\Models\ItemFeedback;
+use App\Models\Order;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 class ItemFeedbackController extends Controller
@@ -36,11 +39,11 @@ class ItemFeedbackController extends Controller
      */
     public function store(Request $request)
     {
-        $itemFeedback = new ItemFeedback();
-        $this->setValues($request, $itemFeedback);
-//        dd(array_map(fn($i) => $i['item_id'], $itemFeedback->user->orders->toArray()));
-//        dd();
-//        $this->authorize('createFeedback', [$itemFeedback->user, $itemFeedback->item]);
+        $itemFeedback = $this->setValues($request, new ItemFeedback());
+        $order = Order::where('item_id', $itemFeedback->item_id)
+            ->where('user_id', $itemFeedback->user_id)
+            ->where('status', 'delivered')->first();
+        if (!isset($order)) throw new AuthorizationException();
         $itemFeedback->saveOrFail();
         return response()->json(status: 201);
     }
@@ -83,22 +86,30 @@ class ItemFeedbackController extends Controller
         $itemFeedback->deleteOrFail();
         return response()->json(status: 204);
     }
+
     private function setValues(Request $request, ItemFeedback $itemFeedback): ItemFeedback
     {
         $this->validate($request);
-        $itemFeedback->user_id = $request->user_id;
+        $itemFeedback->user_id = auth()->user()->id;
         $itemFeedback->rating = $request->rating;
         $itemFeedback->details = $request->details;
         $itemFeedback->item_id = $request->item_id;
         return $itemFeedback;
     }
+
     private function validate(Request $request)
     {
-        $request->validate([
+        $rules = [
             'rating' => 'required|integer|min:0|max:5',
             'details' => 'required|string',
-            'item_id' => 'required|exists:items,id|integer',
-            'user_id' => 'required|exists:users,id|integer',
-        ]);
+            'item_id' => 'required|exists:items,id|integer'
+        ];
+        $unique = Rule::unique('item_feedbacks')->where(function ($query) use ($request) {
+            $query->where('item_id', $request->item_id)
+                ->where('user_id', auth()->user()->id);
+        });
+        if ($request->method() == 'POST')
+            $rules['item_id'] .= "|$unique";
+        $request->validate($rules);
     }
 }

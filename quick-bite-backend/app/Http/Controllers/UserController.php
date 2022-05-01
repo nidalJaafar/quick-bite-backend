@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Throwable;
 
 
@@ -116,7 +114,7 @@ class UserController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|string|unique:users,email',
-            'password' => 'required|confirmed|string',
+            'password' => ['required', 'confirmed', 'string', Password::min(8)->letters()->symbols()->mixedCase()],
             'role' => 'required|string|in:client,admin,super admin'
         ]);
     }

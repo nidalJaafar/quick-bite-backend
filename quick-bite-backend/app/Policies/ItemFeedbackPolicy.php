@@ -2,11 +2,9 @@
 
 namespace App\Policies;
 
-use App\Models\Item;
 use App\Models\ItemFeedback;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Database\Eloquent\Collection;
 
 class ItemFeedbackPolicy
 {
@@ -44,7 +42,6 @@ class ItemFeedbackPolicy
     public function create(User $user): bool
     {
         return $user->role == 'client';
-//            && in_array(11, array_map(fn($i) => $i['item_id'], $user->orders->toArray()));
     }
 
     /**
@@ -57,7 +54,7 @@ class ItemFeedbackPolicy
     public function update(User $user, ItemFeedback $itemFeedback): bool
     {
         $user->load('itemFeedbacks');
-        return in_array($itemFeedback->id, array_map(fn($i) => $i->id, $user->itemFeedbacks));
+        return in_array($itemFeedback->id, array_map(fn($i) => $i['id'], $user->itemFeedbacks->toArray()));
     }
 
     /**
@@ -70,7 +67,7 @@ class ItemFeedbackPolicy
     public function delete(User $user, ItemFeedback $itemFeedback): bool
     {
         $user->load('itemFeedbacks');
-        return in_array($itemFeedback->id, array_map(fn($i) => $i->id, $user->itemFeedbacks));
+        return in_array($itemFeedback->id, array_map(fn($i) => $i['id'], $user->itemFeedbacks->toArray()));
     }
 
     /**
@@ -83,7 +80,7 @@ class ItemFeedbackPolicy
     public function restore(User $user, ItemFeedback $itemFeedback): bool
     {
         $user->load('itemFeedbacks');
-        return in_array($itemFeedback->id, array_map(fn($i) => $i->id, $user->itemFeedbacks));
+        return in_array($itemFeedback->id, array_map(fn($i) => $i['id'], $user->itemFeedbacks->toArray()));
     }
 
     /**
@@ -96,6 +93,6 @@ class ItemFeedbackPolicy
     public function forceDelete(User $user, ItemFeedback $itemFeedback): bool
     {
         $user->load('itemFeedbacks');
-        return in_array($itemFeedback->id, array_map(fn($i) => $i->id, $user->itemFeedbacks));
+        return in_array($itemFeedback->id, array_map(fn($i) => $i['id'], $user->itemFeedbacks->toArray()));
     }
 }
