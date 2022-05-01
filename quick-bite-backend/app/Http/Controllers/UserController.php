@@ -40,7 +40,7 @@ class UserController extends Controller
      *
      * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $users = User::with('itemFeedbacks.item.images', 'visitFeedback')->get();
         return response()->json(['users' => new UserCollection($users)]);
@@ -52,10 +52,12 @@ class UserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function signup(Request $request)
+    public function signup(Request $request): JsonResponse
     {
-        $this->setValues($request, new User())->save();
-        return $this->login($request);
+        $user = $this->setValues($request, new User());
+        $user->save();
+        return response()->json(['token' => $user->createToken('login_token')->plainTextToken], status: 201);
+
     }
 
     /**

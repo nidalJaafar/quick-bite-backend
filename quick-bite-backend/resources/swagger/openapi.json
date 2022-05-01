@@ -1,0 +1,2027 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Quick Bite API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api"
+        },
+        {
+            "url": "localhost:8000/api"
+        }
+    ],
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "paths": {
+        "/currencies": {
+            "get": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Gets all currencies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/CurrencyCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Add a new currency",
+                "requestBody": {
+                    "description": "Currency object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Currency"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/currencies/{currency}": {
+            "get": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Finds currency by ID",
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "ID of the currency that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/Currency"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "currency not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Updates an existing currency",
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "ID of the currency that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Currency object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Currency"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "currency not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Currency"
+                ],
+                "summary": "Deletes an existing currency",
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "ID of the currency that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "currency not found"
+                    }
+                }
+            }
+        },
+        "/faqs": {
+            "get": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Gets all FAQs",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/FaqCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Add a new FAQ",
+                "requestBody": {
+                    "description": "FAQ object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Faq"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/faqs/{faq}": {
+            "get": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Finds FAQ by ID",
+                "parameters": [
+                    {
+                        "name": "faq",
+                        "in": "path",
+                        "description": "ID of the FAQ that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/Faq"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "currency not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Updates an existing FAQ",
+                "parameters": [
+                    {
+                        "name": "faq",
+                        "in": "path",
+                        "description": "ID of the FAQ that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "FAQ object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Currency"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "currency not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Deletes an existing FAQ",
+                "parameters": [
+                    {
+                        "name": "faq",
+                        "in": "path",
+                        "description": "ID of the FAQ that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "FAQ not found"
+                    }
+                }
+            }
+        },
+        "/images": {
+            "get": {
+                "tags": [
+                    "Image"
+                ],
+                "summary": "Gets all images",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/ImageCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Image"
+                ],
+                "summary": "Adds a new image",
+                "requestBody": {
+                    "description": "Image object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Image"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/images/{image}": {
+            "get": {
+                "tags": [
+                    "Image"
+                ],
+                "summary": "Finds currency by ID",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID of the image that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/Image"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "image not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Image"
+                ],
+                "summary": "Updates an existing Image",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID of the image that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Image object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Image"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "image not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Image"
+                ],
+                "summary": "Deletes an existing image",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID of the image that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "image not found"
+                    }
+                }
+            }
+        },
+        "/items": {
+            "get": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Gets all items",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/ItemCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Add a new item",
+                "requestBody": {
+                    "description": "Item object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Item"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/items/{item}": {
+            "get": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Finds item by ID",
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "description": "ID of the item that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/Item"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "item not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Updates an existing item",
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "description": "ID of the item that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Item object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Item"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "item not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Item"
+                ],
+                "summary": "Deletes an existing item",
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "description": "ID of the item that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "item not found"
+                    }
+                }
+            }
+        },
+        "/menus": {
+            "get": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Gets all menus",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/MenuCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Add a new menu",
+                "requestBody": {
+                    "description": "Menu object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Menu"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/menus/{menu}": {
+            "get": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Finds menu by ID",
+                "parameters": [
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "description": "ID of the menu that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/Menu"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "menu not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Updates an existing menu",
+                "parameters": [
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "description": "ID of the menu that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Menu object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Menu"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "menu not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Deletes an existing menu",
+                "parameters": [
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "description": "ID of the menu that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "menu not found"
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Gets all orders",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/OrderCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Add a new order",
+                "requestBody": {
+                    "description": "Order object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Order"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/orders/{order}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Finds order by ID",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "ID of the order that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/Order"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "order not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Updates an existing order",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "ID of the order that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Order object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Order"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "order not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Deletes an existing order",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "ID of the order that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "order not found"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "security": [],
+                "tags": [
+                    "User"
+                ],
+                "summary": "login to an existing account",
+                "requestBody": {
+                    "description": "User that needs to be logged in",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/UserToken"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "account not found"
+                    }
+                }
+            }
+        },
+        "/signup": {
+            "post": {
+                "security": [],
+                "tags": [
+                    "User"
+                ],
+                "summary": "creates a new account",
+                "requestBody": {
+                    "description": "User that needs to be registered",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string"
+                                    },
+                                    "last_name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "enum": [
+                                            "client",
+                                            "admin",
+                                            "super admin"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/UserToken"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "logout from an existing account",
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Gets all users",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/UserCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Finds user by ID",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "user not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Updates an existing user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "User object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Deletes an existing user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    }
+                }
+            }
+        },
+        "/item_feedbacks": {
+            "get": {
+                "tags": [
+                    "Item feedback"
+                ],
+                "summary": "Gets all item_feedbacks",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/ItemFeedbackCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Item feedback"
+                ],
+                "summary": "Add a new item feedback",
+                "requestBody": {
+                    "description": "Item feedback object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemFeedback"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/item_feedbacks/{item_feedback}": {
+            "get": {
+                "tags": [
+                    "Item feedback"
+                ],
+                "summary": "Finds item feedback by ID",
+                "parameters": [
+                    {
+                        "name": "item_feedback",
+                        "in": "path",
+                        "description": "ID of the item feedback that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/ItemFeedback"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "item feedback not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Item feedback"
+                ],
+                "summary": "Updates an existing item feedback",
+                "parameters": [
+                    {
+                        "name": "item_feedback",
+                        "in": "path",
+                        "description": "ID of the item feedback that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Item feedback object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemFeedback"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "item feedback not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Item feedback"
+                ],
+                "summary": "Deletes an existing item feedback",
+                "parameters": [
+                    {
+                        "name": "item_feedback",
+                        "in": "path",
+                        "description": "ID of the item feedback that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "item feedback not found"
+                    }
+                }
+            }
+        },
+        "/visit_feedbacks": {
+            "get": {
+                "tags": [
+                    "Visit feedback"
+                ],
+                "summary": "Gets all visit feedbacks",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/VisitFeedbackCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Visit feedback"
+                ],
+                "summary": "Add a new visit feedback",
+                "requestBody": {
+                    "description": "VisitFeedback object that needs to be added",
+                    "content": {
+                        "*/*": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VisitFeedback"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/visit_feedbacks/{visit_feedback}": {
+            "get": {
+                "tags": [
+                    "Visit feedback"
+                ],
+                "summary": "Finds visit feedback by ID",
+                "parameters": [
+                    {
+                        "name": "visit_feedback",
+                        "in": "path",
+                        "description": "ID of the visit feedback that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/VisitFeedback"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "visit feedback not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Visit feedback"
+                ],
+                "summary": "Updates an existing visit feedback",
+                "parameters": [
+                    {
+                        "name": "visit_feedback",
+                        "in": "path",
+                        "description": "ID of the visit feedback that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "VisitFeedback object that needs to be added",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VisitFeedback"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "visit feedback not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Visit feedback"
+                ],
+                "summary": "Deletes an existing visit feedback",
+                "parameters": [
+                    {
+                        "name": "visit_feedback",
+                        "in": "path",
+                        "description": "ID of the visit feedback that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "visit feedback not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Currency": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "symbol": {
+                        "type": "string"
+                    },
+                    "rate": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                }
+            },
+            "Faq": {
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "type": "string"
+                    },
+                    "answer": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Image": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string"
+                    },
+                    "item_id": {
+                        "type": "number",
+                        "format": "integer"
+                    }
+                }
+            },
+            "ItemFeedback": {
+                "type": "object",
+                "properties": {
+                    "rating": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "item_id": {
+                        "type": "number",
+                        "format": "integer"
+                    }
+                }
+            },
+            "Item": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "plate",
+                            "sandwich",
+                            "dessert",
+                            "drink"
+                        ]
+                    },
+                    "base_price": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "sale": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "average_rating": {
+                        "maximum": 5,
+                        "minimum": 0,
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "menu_id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "is_trending": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "Menu": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Order": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "delivered"
+                        ]
+                    },
+                    "item_id": {
+                        "type": "number",
+                        "format": "integer"
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "client",
+                            "admin",
+                            "super admin"
+                        ]
+                    }
+                }
+            },
+            "VisitFeedback": {
+                "type": "object",
+                "properties": {
+                    "rating": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "details": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        },
+        "responses": {
+            "Currency": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "symbol": {
+                        "type": "string"
+                    },
+                    "rate": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                }
+            },
+            "CurrencyCollection": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/Currency"
+                        }
+                    }
+                }
+            },
+            "Faq": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "question": {
+                        "type": "string"
+                    },
+                    "answer": {
+                        "type": "string"
+                    }
+                }
+            },
+            "FaqCollection": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/Faq"
+                        }
+                    }
+                }
+            },
+            "Image": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "path": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ImageCollection": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/Image"
+                        }
+                    }
+                }
+            },
+            "Item": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "base_price": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "average_rating": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "is_trending": {
+                        "type": "boolean"
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/ImageCollection"
+                        }
+                    }
+                }
+            },
+            "ItemCollection": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/Item"
+                        }
+                    }
+                }
+            },
+            "Menu": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "$ref": "#/components/responses/ItemCollection"
+                    }
+                }
+            },
+            "MenuCollection": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/Menu"
+                        }
+                    }
+                }
+            },
+            "Order": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "delivered"
+                        ]
+                    },
+                    "user": {
+                        "$ref": "#/components/responses/User"
+                    },
+                    "item": {
+                        "$ref": "#/components/responses/Item"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "OrderCollection": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/Order"
+                        }
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "client",
+                            "admin",
+                            "super admin"
+                        ]
+                    },
+                    "item_feedbacks": {
+                        "type": "object",
+                        "properties": {
+                            "count": {
+                                "type": "number",
+                                "format": "integer"
+                            },
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "number",
+                                            "format": "integer"
+                                        },
+                                        "rating": {
+                                            "type": "number",
+                                            "enum": [
+                                                0,
+                                                1,
+                                                2,
+                                                3,
+                                                4,
+                                                5
+                                            ]
+                                        },
+                                        "details": {
+                                            "type": "string"
+                                        },
+                                        "item": {
+                                            "$ref": "#/components/responses/Item"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "visit_feedback": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number",
+                                "format": "integer"
+                            },
+                            "rating": {
+                                "type": "number",
+                                "enum": [
+                                    0,
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5
+                                ]
+                            },
+                            "details": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        }
+                    }
+                }
+            },
+            "UserCollection": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/User"
+                        }
+                    }
+                }
+            },
+            "UserToken": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ItemFeedback": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "rating": {
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "item": {
+                        "$ref": "#/components/responses/Item"
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number",
+                                "format": "integer"
+                            },
+                            "first_name": {
+                                "type": "string"
+                            },
+                            "last_name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "role": {
+                                "type": "string",
+                                "enum": [
+                                    "client",
+                                    "admin",
+                                    "super admin"
+                                ]
+                            }
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "ItemFeedbackCollection": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/ItemFeedback"
+                        }
+                    }
+                }
+            },
+            "VisitFeedback": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "rating": {
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number",
+                                "format": "integer"
+                            },
+                            "first_name": {
+                                "type": "string"
+                            },
+                            "last_name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "role": {
+                                "type": "string",
+                                "enum": [
+                                    "client",
+                                    "admin",
+                                    "super admin"
+                                ]
+                            }
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "VisitFeedbackCollection": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "number",
+                        "format": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/responses/VisitFeedback"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -12,10 +14,19 @@ class ExampleTest extends TestCase
      *
      * @return void
      */
-    public function test_the_application_returns_a_successful_response()
+    public function test_signup_returning_successful_response()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        $user = User::factory()->create();
+        $data = [
+            "first_name" => "nidal",
+            "last_name" => "jaafar",
+            "email" => "nidaljaafar@x12.com",
+            "password" => "1234",
+            "password_confirmation" => "1234",
+            "role" => "admin"
+        ];
+        $testResponse = $this->post('localhost:8000/api/signup', $data)
+            ->assertCreated();
+        var_dump($testResponse);
     }
 }
