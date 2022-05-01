@@ -24,20 +24,23 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [UserController::class, 'logout']);
+    Route::apiResources([
+        'items' => ItemController::class,
+        'images' => ImageController::class,
+        'users' => UserController::class,
+        'currencies' => CurrencyController::class,
+        'item_feedbacks' => ItemFeedbackController::class,
+        'menus' => MenuController::class,
+        'orders' => OrderController::class,
+        'visit_feedbacks' => VisitFeedbackController::class,
+        'faqs' => FaqController::class
+    ]);
 });
-
-Route::apiResources([
-    'users' => UserController::class,
-    'currencies' => CurrencyController::class,
-    'images' => ImageController::class,
-    'items' => ItemController::class,
-    'item_feedbacks' => ItemFeedbackController::class,
-    'menus' => MenuController::class,
-    'orders' => OrderController::class,
-    'visit_feedbacks' => VisitFeedbackController::class,
-    'faqs' => FaqController::class
-]);
-
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/signup', [UserController::class, 'signup']);
+
+
+
+
 
 

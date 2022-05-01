@@ -7,15 +7,21 @@ use App\Http\Resources\MenuResource;
 use App\Models\Menu;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class MenuController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Menu::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $menus = Menu::with('items.images')->get();
         return response()->json(['menus' => new MenuCollection($menus)]);
@@ -26,22 +32,23 @@ class MenuController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        $this->setValues($request, new Menu())->save();
+        $this->setValues($request, new Menu())->saveOrFail();
         return response()->json(status: 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param Menu $menu
      * @return JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(Menu $menu)
     {
-        $menu = Menu::with('items.images')->findOrFail($id);
+        $menu->load('items.images');
         return response()->json(['menu' => new MenuResource($menu)]);
     }
 
@@ -49,30 +56,40 @@ class MenuController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param Menu $menu
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, Menu $menu)
     {
-        $this->setValues($request, Menu::findOrFail($id))->save();
+        $this->setValues($request, $menu)->saveOrFail();
         return response()->json(status: 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param Menu $menu
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Menu $menu)
     {
-        Menu::findOrFail($id)->destroy($id);
+        $menu->deleteOrFail();
         return response()->json(status: 204);
     }
 
     private function setValues(Request $request, Menu $menu): Menu
     {
+        $this->validate($request);
         $menu->name = $request->name;
         return $menu;
+    }
+
+    private function validate(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+        ]);
     }
 }

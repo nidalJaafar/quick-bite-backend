@@ -17,10 +17,10 @@ return new class extends Migration
     {
         Schema::create('item_feedbacks', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->cascadeOnDelete()->cascadeOnUpdate();;
             $table->enum('rating', [0,1,2,3,4,5]);
             $table->text('details');
-            $table->foreignIdFor(Item::class);
+            $table->foreignIdFor(Item::class)->cascadeOnDelete()->cascadeOnUpdate();;
             $table->timestamps();
         });
     }

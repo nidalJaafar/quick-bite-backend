@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -53,6 +54,8 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof ModelNotFoundException)
             return response()->json(['message' => 'not found'], 404);
+        if ($e instanceof AccessDeniedHttpException)
+            return response()->json(['message' => 'access denied'], 403);
         return parent::render($request, $e);
     }
 }

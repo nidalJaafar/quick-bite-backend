@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Item;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,10 +14,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('images', function (Blueprint $table) {
+        Schema::create('visit_feedbacks', function (Blueprint $table) {
             $table->id();
-            $table->string('path');
-            $table->foreignIdFor(Item::class);
+            $table->foreignIdFor(User::class)->cascadeOnDelete()->cascadeOnUpdate();;
+            $table->enum('rating', [0,1,2,3,4,5]);
+            $table->text('details');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_images');
+        Schema::dropIfExists('visit_feedbacks');
     }
 };

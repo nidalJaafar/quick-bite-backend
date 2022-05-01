@@ -21,8 +21,8 @@ return new class extends Migration
             $table->enum('type', ['plate', 'sandwich', 'dessert', 'drink']);
             $table->decimal('base_price');
             $table->integer('sale');
-            $table->double('average_rating');
-            $table->foreignIdFor(Menu::class);
+            $table->double('average_rating')->default(0);
+            $table->foreignIdFor(Menu::class)->cascadeOnDelete()->cascadeOnUpdate();;
             $table->tinyInteger('is_trending');
         });
     }
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_items');
+        Schema::dropIfExists('items');
     }
 };

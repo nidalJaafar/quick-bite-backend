@@ -7,9 +7,15 @@ use App\Http\Resources\FaqResource;
 use App\Models\Faq;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class FaqController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Faq::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -26,54 +32,64 @@ class FaqController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws Throwable
      */
     public function store(Request $request)
     {
-        $this->setValues($request, new Faq())->save();
+        $this->setValues($request, new Faq())->saveOrFail();
         return response()->json(status: 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param Faq $faq
      * @return JsonResponse
      */
-    public function show(int $id)
+    public function show(Faq $faq)
     {
-        $faqs = Faq::findOrFail($id);
-        return response()->json(['FAQs' => new FaqResource($faqs)]);
+        return response()->json(['FAQs' => new FaqResource($faq)]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param Faq $faq
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, Faq $faq)
     {
-        $this->setValues($request, Faq::findOrFail($id))->save();
+        $this->setValues($request, $faq)->saveOrFail();
         return response()->json(status: 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param Faq $faq
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function destroy(int $id)
+    public function destroy(Faq $faq)
     {
-        Faq::findOrFail($id)->destroy();
-        return response()->json(status:204);
+        $faq->deleteOrFail();
+        return response()->json(status: 204);
     }
 
     private function setValues(Request $request, Faq $faq): Faq
     {
+        $this->validate($request);
         $faq->question = $request->question;
         $faq->answer = $request->answer;
         return $faq;
+    }
+    private function validate(Request $request)
+    {
+        $request->validate([
+            'question' => 'required|string',
+            'answer' => 'required|string'
+        ]);
     }
 }

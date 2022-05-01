@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Item;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +15,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->enum('role', ['client', 'admin', 'super admin']);
+            $table->enum('status', ['pending', 'delivered'])->default('pending');
+            $table->foreignIdFor(Item::class)->cascadeOnDelete()->cascadeOnUpdate();;
+            $table->foreignIdFor(User::class)->cascadeOnDelete()->cascadeOnUpdate();;
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_users');
+        Schema::dropIfExists('orders');
     }
 };

@@ -7,15 +7,21 @@ use App\Http\Resources\VisitFeedbackResource;
 use App\Models\VisitFeedback;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class VisitFeedbackController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(VisitFeedback::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $visitFeedbacks = VisitFeedback::with('user')->get();
         return response()->json(['visit_feedbacks' => new VisitFeedbackCollection($visitFeedbacks)]);
@@ -26,22 +32,23 @@ class VisitFeedbackController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        $this->setValues($request, new VisitFeedback())->save();
+        $this->setValues($request, new VisitFeedback())->saveOrFail();
         return response()->json(status: 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param VisitFeedback $visitFeedback
      * @return JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(VisitFeedback $visitFeedback)
     {
-        $visitFeedback = VisitFeedback::with('user')->findOrFail($id);
+        $visitFeedback->load('user');
         return response()->json(['visit_feedback' => new VisitFeedbackResource($visitFeedback)]);
     }
 
@@ -49,32 +56,43 @@ class VisitFeedbackController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param VisitFeedback $visitFeedback
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, VisitFeedback $visitFeedback)
     {
-        $this->setValues($request, VisitFeedback::findOrFail($id))->save();
+        $this->setValues($request, $visitFeedback)->saveOrFail();
         return response()->json(status: 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param VisitFeedback $visitFeedback
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(VisitFeedback $visitFeedback)
     {
-        VisitFeedback::findOrFail($id)->destroy($id);
+        $visitFeedback->deleteOrFail();
         return response()->json(status: 204);
     }
 
     private function setValues(Request $request, VisitFeedback $visitFeedback): VisitFeedback
     {
+        $this->validate($request);
         $visitFeedback->user_id = $request->user_id;
         $visitFeedback->rating = $request->rating;
         $visitFeedback->details = $request->details;
         return $visitFeedback;
+    }
+    private function validate(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id|integer',
+            'rating' => 'required|min:0|max:5|integer',
+            'details' => 'required|string',
+        ]);
     }
 }

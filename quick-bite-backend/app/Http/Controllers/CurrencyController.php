@@ -2,23 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\CollectionResource;
+use App\Http\Resources\CurrencyCollection;
 use App\Http\Resources\CurrencyResource;
 use App\Models\Currency;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class CurrencyController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Currency::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $currencies = Currency::all();
-        return response()->json(['currencies' => new CollectionResource($currencies)]);
+        return response()->json(['currencies' => new CurrencyCollection($currencies)]);
     }
 
     /**
@@ -26,22 +32,22 @@ class CurrencyController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        $this->setValues($request, new Currency())->save();
+        $this->setValues($request, new Currency())->saveOrFail();
         return response()->json(status: 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param Currency $currency
      * @return JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(Currency $currency)
     {
-        $currency = Currency::findOrFail($id);
         return response()->json(['currency' => new CurrencyResource($currency)]);
     }
 
@@ -49,32 +55,44 @@ class CurrencyController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param Currency $currency
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, Currency $currency)
     {
-        $this->setValues($request, Currency::findOrFail($id))->save();
+        $this->setValues($request,$currency)->saveOrFail();
         return response()->json(status: 201);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param Currency $currency
      * @return JsonResponse
+     * @throws Throwable
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Currency $currency)
     {
-        Currency::findOrFail($id)->destroy($id);
+        $currency->deleteOrFail();
         return response()->json(status: 204);
     }
 
     private function setValues(Request $request, Currency $currency): Currency
     {
+        $this->validate($request);
         $currency->name = $request->name;
         $currency->symbol = $request->symbol;
         $currency->rate = $request->rate;
         return $currency;
+    }
+
+    private function validate(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'symbol' => 'required',
+            'rate' => 'required|integer',
+        ]);
     }
 }
