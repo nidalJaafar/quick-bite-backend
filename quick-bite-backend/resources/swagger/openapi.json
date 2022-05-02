@@ -7,9 +7,6 @@
     "servers": [
         {
             "url": "/api"
-        },
-        {
-            "url": "localhost:8000/api"
         }
     ],
     "security": [
