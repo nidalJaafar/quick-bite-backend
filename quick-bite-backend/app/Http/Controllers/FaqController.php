@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\FaqCollection;
-use App\Http\Resources\FaqResource;
+use App\Http\Requests\FaqRequest;
+use App\Http\Services\FaqService;
 use App\Models\Faq;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Throwable;
+use function response;
 
 class FaqController extends Controller
 {
-    public function __construct()
+    private FaqService $service;
+
+    public function __construct(FaqService $service)
     {
-        $this->authorizeResource(Faq::class);
+        $this->service = $service;
     }
 
     /**
@@ -23,20 +26,21 @@ class FaqController extends Controller
      */
     public function index()
     {
-        $faqs = Faq::all();
-        return response()->json(['FAQs' => new FaqCollection($faqs)]);
+        return response()->json(['FAQs' => $this->service->getFaqs()]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param FaqRequest $request
      * @return JsonResponse
      * @throws Throwable
+     * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(FaqRequest $request)
     {
-        $this->setValues($request, new Faq())->saveOrFail();
+        $this->authorize('create', Faq::class);
+        $this->service->createFaq($request);
         return response()->json(status: 201);
     }
 
@@ -48,20 +52,21 @@ class FaqController extends Controller
      */
     public function show(Faq $faq)
     {
-        return response()->json(['FAQs' => new FaqResource($faq)]);
+        return response()->json(['FAQ' => $this->service->getFaq($faq)]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param FaqRequest $request
      * @param Faq $faq
      * @return JsonResponse
      * @throws Throwable
      */
-    public function update(Request $request, Faq $faq)
+    public function update(FaqRequest $request, Faq $faq)
     {
-        $this->setValues($request, $faq)->saveOrFail();
+        $this->authorize('update', $faq);
+        $this->service->updateFaq($request, $faq);
         return response()->json(status: 201);
     }
 
@@ -74,22 +79,9 @@ class FaqController extends Controller
      */
     public function destroy(Faq $faq)
     {
-        $faq->deleteOrFail();
+        $this->authorize('delete', $faq);
+        $this->service->deleteFaq($faq);
         return response()->json(status: 204);
     }
 
-    private function setValues(Request $request, Faq $faq): Faq
-    {
-        $this->validate($request);
-        $faq->question = $request->question;
-        $faq->answer = $request->answer;
-        return $faq;
-    }
-    private function validate(Request $request)
-    {
-        $request->validate([
-            'question' => 'required|string',
-            'answer' => 'required|string'
-        ]);
-    }
 }

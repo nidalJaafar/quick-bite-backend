@@ -11,29 +11,6 @@ class ItemFeedbackPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
-     *
-     * @param User $user
-     * @return bool
-     */
-    public function viewAny(User $user): bool
-    {
-        return true;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param User $user
-     * @param ItemFeedback $itemFeedback
-     * @return bool
-     */
-    public function view(User $user, ItemFeedback $itemFeedback): bool
-    {
-        return true;
-    }
-
-    /**
      * Determine whether the user can create models.
      *
      * @param User $user
@@ -70,29 +47,4 @@ class ItemFeedbackPolicy
         return in_array($itemFeedback->id, array_map(fn($i) => $i['id'], $user->itemFeedbacks->toArray()));
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param User $user
-     * @param ItemFeedback $itemFeedback
-     * @return bool
-     */
-    public function restore(User $user, ItemFeedback $itemFeedback): bool
-    {
-        $user->load('itemFeedbacks');
-        return in_array($itemFeedback->id, array_map(fn($i) => $i['id'], $user->itemFeedbacks->toArray()));
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param User $user
-     * @param ItemFeedback $itemFeedback
-     * @return bool
-     */
-    public function forceDelete(User $user, ItemFeedback $itemFeedback): bool
-    {
-        $user->load('itemFeedbacks');
-        return in_array($itemFeedback->id, array_map(fn($i) => $i['id'], $user->itemFeedbacks->toArray()));
-    }
 }

@@ -2,62 +2,73 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserCollection;
-use App\Http\Resources\UserResource;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Services\UserService;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 use Throwable;
+use function response;
 
 
 class UserController extends Controller
 {
 
-    public function __construct()
+    private UserService $service;
+
+    /**
+     * @param UserService $service
+     */
+    public function __construct(UserService $service)
     {
-        $this->authorizeResource(User::class);
+        $this->service = $service;
     }
 
-    public function login(Request $request): JsonResponse
+
+    public function login(LoginRequest $request): JsonResponse
     {
-        $user = User::where('email', $request->email)->first();
-        if (!isset($user) || !Hash::check($request->password, $user->password))
-            throw new ModelNotFoundException();
-        return response()->json(['token' => $user->createToken('login_token')->plainTextToken]);
+        return response()->json(['token' => $this->service->login($request)]);
     }
 
     public function logout(): JsonResponse
     {
-        auth()->user()->tokens()->delete();
+        $this->service->logout();
         return response()->json(status: 201);
+    }
+
+    /**
+     * @throws AuthorizationException
+     * @throws Throwable
+     */
+    public function store(RegisterRequest $request)
+    {
+        $this->authorize('createAdmin', User::class);
+        return response()->json(['token' => $this->service->addAdmins($request)], status: 201);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param RegisterRequest $request
+     * @return JsonResponse
+     * @throws Throwable
+     */
+    public function signup(RegisterRequest $request): JsonResponse
+    {
+        return response()->json(['token' => $this->service->signup($request)], status: 201);
     }
 
     /**
      * Display a listing of the resource.
      *
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function index(): JsonResponse
     {
-        $users = User::with('itemFeedbacks.item.images', 'visitFeedback')->get();
-        return response()->json(['users' => new UserCollection($users)]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function signup(Request $request): JsonResponse
-    {
-        $user = $this->setValues($request, new User());
-        $user->save();
-        return response()->json(['token' => $user->createToken('login_token')->plainTextToken], status: 201);
-
+        $this->authorize('viewAny', User::class);
+        return response()->json(['users' => $this->service->getUsers()]);
     }
 
     /**
@@ -65,24 +76,26 @@ class UserController extends Controller
      *
      * @param User $user
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function show(User $user)
     {
-        $user->load('itemFeedbacks.item.images', 'visitFeedback');
-        return response()->json(['user' => new UserResource($user)]);
+        $this->authorize('view', $user);
+        return response()->json(['user' => $this->service->getUser($user)]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param RegisterRequest $request
      * @param User $user
      * @return JsonResponse
-     * @throws Throwable
+     * @throws AuthorizationException|Throwable
      */
-    public function update(Request $request, User $user)
+    public function update(RegisterRequest $request, User $user)
     {
-        $this->setValues($request, $user)->saveOrFail();
+        $this->authorize('update', $user);
+        $this->service->updateUser($request, $user);
         return response()->json(status: 204);
     }
 
@@ -95,29 +108,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->deleteOrFail();
+        $this->authorize('delete', $user);
+        $this->service->deleteUser($user);
         return response()->json(status: 204);
     }
 
-    private function setValues(Request $request, User $user): User
-    {
-        $this->validateRequest($request);
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->role = $request->role;
-        return $user;
-    }
-
-    public function validateRequest(Request $request, $rules = [], $messages = [], $customAttributes = [])
-    {
-        $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|string|unique:users,email',
-            'password' => ['required', 'confirmed', 'string', Password::min(8)->letters()->symbols()->mixedCase()],
-            'role' => 'required|string|in:client,admin,super admin'
-        ]);
-    }
 }

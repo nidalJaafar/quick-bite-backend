@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\VisitFeedbackCollection;
-use App\Http\Resources\VisitFeedbackResource;
+use App\Http\Requests\VisitFeedbackRequest;
+use App\Http\Services\VisitFeedbackService;
 use App\Models\VisitFeedback;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Throwable;
+use function response;
 
 class VisitFeedbackController extends Controller
 {
-    public function __construct()
+    private VisitFeedbackService $service;
+
+    /**
+     * @param VisitFeedbackService $service
+     */
+    public function __construct(VisitFeedbackService $service)
     {
-        $this->authorizeResource(VisitFeedback::class);
+        $this->service = $service;
     }
 
     /**
@@ -23,20 +28,20 @@ class VisitFeedbackController extends Controller
      */
     public function index()
     {
-        $visitFeedbacks = VisitFeedback::with('user')->get();
-        return response()->json(['visit_feedbacks' => new VisitFeedbackCollection($visitFeedbacks)]);
+        return response()->json(['visit_feedbacks' => $this->service->getVisitFeedbacks()]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param VisitFeedbackRequest $request
      * @return JsonResponse
      * @throws Throwable
      */
-    public function store(Request $request)
+    public function store(VisitFeedbackRequest $request)
     {
-        $this->setValues($request, new VisitFeedback())->saveOrFail();
+        $this->authorize('create', VisitFeedback::class);
+        $this->service->createVisitFeedback($request);
         return response()->json(status: 201);
     }
 
@@ -48,21 +53,21 @@ class VisitFeedbackController extends Controller
      */
     public function show(VisitFeedback $visitFeedback)
     {
-        $visitFeedback->load('user');
-        return response()->json(['visit_feedback' => new VisitFeedbackResource($visitFeedback)]);
+        return response()->json(['visit_feedback' => $this->service->getVisitFeedback($visitFeedback)]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param VisitFeedbackRequest $request
      * @param VisitFeedback $visitFeedback
      * @return JsonResponse
      * @throws Throwable
      */
-    public function update(Request $request, VisitFeedback $visitFeedback)
+    public function update(VisitFeedbackRequest $request, VisitFeedback $visitFeedback)
     {
-        $this->setValues($request, $visitFeedback)->saveOrFail();
+        $this->authorize('update', $visitFeedback);
+        $this->service->updateVisitFeedback($request, $visitFeedback);
         return response()->json(status: 201);
     }
 
@@ -75,23 +80,9 @@ class VisitFeedbackController extends Controller
      */
     public function destroy(VisitFeedback $visitFeedback)
     {
-        $visitFeedback->deleteOrFail();
+        $this->authorize('delete', $visitFeedback);
+        $this->service->deleteVisitFeedback($visitFeedback);
         return response()->json(status: 204);
     }
 
-    private function setValues(Request $request, VisitFeedback $visitFeedback): VisitFeedback
-    {
-        $this->validate($request);
-        $visitFeedback->user_id = auth()->user()->id;
-        $visitFeedback->rating = $request->rating;
-        $visitFeedback->details = $request->details;
-        return $visitFeedback;
-    }
-    private function validate(Request $request)
-    {
-        $request->validate([
-            'rating' => 'required|min:0|max:5|integer',
-            'details' => 'required|string',
-        ]);
-    }
 }

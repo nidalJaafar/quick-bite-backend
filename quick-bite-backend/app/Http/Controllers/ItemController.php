@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ItemCollection;
-use App\Http\Resources\ItemResource;
+use App\Http\Requests\ItemRequest;
+use App\Http\Services\ItemService;
 use App\Models\Item;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Throwable;
+use function response;
 
 class ItemController extends Controller
 {
-    public function __construct()
+    private ItemService $service;
+
+    public function __construct(ItemService $service)
     {
-        $this->authorizeResource(Item::class);
+        $this->service = $service;
     }
 
     /**
@@ -23,20 +25,20 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::with('images', 'itemFeedbacks')->get();
-        return response()->json(['items' => new ItemCollection($items)]);
+        return response()->json(['items' => $this->service->getItems()]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param ItemRequest $request
      * @return JsonResponse
      * @throws Throwable
      */
-    public function store(Request $request)
+    public function store(ItemRequest $request)
     {
-        $this->setValues($request, new Item())->saveOrFail();
+        $this->authorize('create', Item::class);
+        $this->service->createItem($request);
         return response()->json(status: 201);
     }
 
@@ -48,21 +50,21 @@ class ItemController extends Controller
      */
     public function show(Item $item)
     {
-        $item->load('images', 'itemFeedbacks');
-        return response()->json(['item' => new ItemResource($item)]);
+        return response()->json(['item' => $this->service->getItem($item)]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param ItemRequest $request
      * @param Item $item
      * @return JsonResponse
      * @throws Throwable
      */
-    public function update(Request $request, Item $item)
+    public function update(ItemRequest $request, Item $item)
     {
-        $this->setValues($request, $item)->saveOrFail();
+        $this->authorize('update', $item);
+        $this->service->updateItem($request, $item);
         return response()->json(status: 201);
     }
 
@@ -76,33 +78,8 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        $item->deleteOrFail();
+        $this->authorize('delete', $item);
+        $this->service->deleteOrFail($item);
         return response()->json(status: 204);
-    }
-
-    private function setValues(Request $request, Item $item): Item
-    {
-        $this->validate($request);
-        $item->name = $request->name;
-        $item->details = $request->details;
-        $item->type = $request->type;
-        $item->base_price = $request->base_price;
-        $item->sale = $request->sale;
-        $item->average_rating = $request->average_rating;
-        $item->menu_id = $request->menu_id;
-        $item->is_trending = $request->is_trending;
-        return $item;
-    }
-    private function validate(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-            'details' => 'required|string',
-            'type' => 'required|in:plate,sandwich,dessert,drink|string',
-            'base_price' => 'required|numeric',
-            'sale' => 'required|min:0|max:100|integer',
-            'menu_id' => 'required|integer|exists:menus,id',
-            'is_trending' => 'required|boolean'
-        ]);
     }
 }

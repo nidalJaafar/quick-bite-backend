@@ -17,6 +17,7 @@
     "paths": {
         "/currencies": {
             "get": {
+                "security": [],
                 "tags": [
                     "Currency"
                 ],
@@ -59,6 +60,7 @@
         },
         "/currencies/{currency}": {
             "get": {
+                "security": [],
                 "tags": [
                     "Currency"
                 ],
@@ -157,6 +159,7 @@
         },
         "/faqs": {
             "get": {
+                "security": [],
                 "tags": [
                     "FAQ"
                 ],
@@ -199,6 +202,7 @@
         },
         "/faqs/{faq}": {
             "get": {
+                "security": [],
                 "tags": [
                     "FAQ"
                 ],
@@ -297,6 +301,7 @@
         },
         "/images": {
             "get": {
+                "security": [],
                 "tags": [
                     "Image"
                 ],
@@ -339,6 +344,7 @@
         },
         "/images/{image}": {
             "get": {
+                "security": [],
                 "tags": [
                     "Image"
                 ],
@@ -437,6 +443,7 @@
         },
         "/items": {
             "get": {
+                "security": [],
                 "tags": [
                     "Item"
                 ],
@@ -479,6 +486,7 @@
         },
         "/items/{item}": {
             "get": {
+                "security": [],
                 "tags": [
                     "Item"
                 ],
@@ -577,6 +585,7 @@
         },
         "/menus": {
             "get": {
+                "security": [],
                 "tags": [
                     "Menu"
                 ],
@@ -619,6 +628,7 @@
         },
         "/menus/{menu}": {
             "get": {
+                "security": [],
                 "tags": [
                     "Menu"
                 ],
@@ -926,14 +936,6 @@
                                     },
                                     "password_confirmation": {
                                         "type": "string"
-                                    },
-                                    "role": {
-                                        "type": "string",
-                                        "enum": [
-                                            "client",
-                                            "admin",
-                                            "super admin"
-                                        ]
                                     }
                                 }
                             }
@@ -981,6 +983,52 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/responses/UserCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "creates a new admin account",
+                "requestBody": {
+                    "description": "User that needs to be registered",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string"
+                                    },
+                                    "last_name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/UserToken"
                                 }
                             }
                         }
@@ -1088,6 +1136,7 @@
         },
         "/item_feedbacks": {
             "get": {
+                "security": [],
                 "tags": [
                     "Item feedback"
                 ],
@@ -1130,6 +1179,7 @@
         },
         "/item_feedbacks/{item_feedback}": {
             "get": {
+                "security": [],
                 "tags": [
                     "Item feedback"
                 ],
@@ -1228,6 +1278,7 @@
         },
         "/visit_feedbacks": {
             "get": {
+                "security": [],
                 "tags": [
                     "Visit feedback"
                 ],
@@ -1270,6 +1321,7 @@
         },
         "/visit_feedbacks/{visit_feedback}": {
             "get": {
+                "security": [],
                 "tags": [
                     "Visit feedback"
                 ],
@@ -1448,12 +1500,6 @@
                     "sale": {
                         "type": "number",
                         "format": "integer"
-                    },
-                    "average_rating": {
-                        "maximum": 5,
-                        "minimum": 0,
-                        "type": "number",
-                        "format": "double"
                     },
                     "menu_id": {
                         "type": "number",

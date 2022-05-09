@@ -24,23 +24,57 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [UserController::class, 'logout']);
+    Route::controller(CurrencyController::class)->group(function () {
+        Route::post('/currencies', 'store');
+        Route::put('/currencies/{currency}', 'update');
+        Route::delete('/currencies/{currency}', 'destroy');
+    });
+    Route::controller(FaqController::class)->group(function () {
+        Route::post('/faqs', 'store');
+        Route::put('/faqs/{faq}', 'update');
+        Route::delete('/faqs/{faq}', 'destroy');
+    });
+    Route::controller(ItemController::class)->group(function () {
+        Route::post('/items', 'store');
+        Route::put('/items/{item}', 'update');
+        Route::delete('/items/{item}', 'destroy');
+    });
     Route::apiResources([
-        'items' => ItemController::class,
-        'images' => ImageController::class,
         'users' => UserController::class,
-        'currencies' => CurrencyController::class,
-        'item_feedbacks' => ItemFeedbackController::class,
-        'menus' => MenuController::class,
         'orders' => OrderController::class,
-        'visit_feedbacks' => VisitFeedbackController::class,
-        'faqs' => FaqController::class
     ]);
 });
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/signup', [UserController::class, 'signup']);
 
+Route::controller(CurrencyController::class)->group(function () {
+    Route::get('/currencies', 'index');
+    Route::get('/currencies/{currency}', 'show');
+});
+Route::controller(FaqController::class)->group(function () {
+    Route::get('/faqs', 'index');
+    Route::get('/faqs/{faq}', 'show');
+});
+Route::controller(ItemController::class)->group(function () {
+    Route::get('/items', 'index');
+    Route::get('/items/{item}', 'show');
+});
+Route::controller(MenuController::class)->group(function () {
+    Route::get('/menus', 'index');
+    Route::get('/menus/{menu}', 'show');
+});
+Route::controller(VisitFeedbackController::class)->group(function () {
+    Route::get('/visit_feedbacks', 'index');
+    Route::get('/visit_feedbacks/{visitFeedback}', 'show');
+});
+Route::controller(ItemFeedbackController::class)->group(function () {
+    Route::get('/item_feedbacks', 'index');
+    Route::get('/item_feedbacks/{itemFeedback}', 'show');
+});
+Route::controller(ImageController::class)->group(function () {
+    Route::get('/images', 'index');
+    Route::get('/images/{image}', 'show');
+});
 
-
-
-
-
+Route::controller(UserController::class)->group(function () {
+    Route::post('/login', 'login');
+    Route::post('/signup', 'signup');
+});

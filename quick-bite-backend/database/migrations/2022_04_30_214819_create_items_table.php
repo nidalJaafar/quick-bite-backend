@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('details');
-            $table->enum('type', ['plate', 'sandwich', 'dessert', 'drink']);
+            $table->string('type');
             $table->decimal('base_price');
             $table->integer('sale');
             $table->double('average_rating')->default(0);

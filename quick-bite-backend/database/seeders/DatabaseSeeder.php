@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\VisitFeedback;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,9 +29,17 @@ class DatabaseSeeder extends Seeder
         Menu::factory(2)->create();
         Item::factory(10)->create();
         Image::factory(10)->create();
-        ItemFeedback::factory(0)->create();
+        ItemFeedback::factory(2)->create();
         Order::factory(0)->create();
         VisitFeedback::factory(0)->create();
         Faq::factory(5)->create();
+
+        $superAdmin = new User();
+        $superAdmin->first_name = 'super';
+        $superAdmin->last_name = 'admin';
+        $superAdmin->email = 'quickbite@keybase.com';
+        $superAdmin->password = Hash::make('password');
+        $superAdmin->role = 'super admin';
+        $superAdmin->save();
     }
 }

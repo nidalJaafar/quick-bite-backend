@@ -2,41 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\OrderCollection;
-use App\Http\Resources\OrderResource;
+use App\Http\Requests\OrderRequest;
+use App\Http\Services\OrderService;
 use App\Models\Order;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Throwable;
+use function response;
 
 class OrderController extends Controller
 {
-    public function __construct()
+    private OrderService $service;
+
+    public function __construct(OrderService $service)
     {
-        $this->authorizeResource(Order::class);
+        $this->service = $service;
     }
 
     /**
      * Display a listing of the resource.
      *
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function index()
     {
-        $orders = Order::with('item.images', 'user')->get();
-        return response()->json(['orders' => new OrderCollection($orders)]);
+        $this->authorize('viewAny', Order::class);
+        return response()->json(['orders' => $this->service->getOrders()]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param OrderRequest $request
      * @return JsonResponse
      * @throws Throwable
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
-        $this->setValues($request, new Order())->saveOrFail();
+        $this->authorize('create', Order::class);
+        $this->service->createOrder($request);
         return response()->json(status: 201);
     }
 
@@ -45,24 +50,26 @@ class OrderController extends Controller
      *
      * @param Order $order
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function show(Order $order)
     {
-        $order->load('item.images', 'user');
-        return response()->json(['order' => new OrderResource($order)]);
+        $this->authorize('view', $order);
+        return response()->json(['order' => $this->service->getOrder($order)]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param OrderRequest $request
      * @param Order $order
      * @return JsonResponse
      * @throws Throwable
      */
-    public function update(Request $request, Order $order)
+    public function update(OrderRequest $request, Order $order)
     {
-        $this->setValues($request, $order)->saveOrFail();
+        $this->authorize('update', $order);
+        $this->service->updateOrder($request, $order);
         return response()->json(status: 201);
     }
 
@@ -75,24 +82,9 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        $order->deleteOrFail();
+        $this->authorize('delete', $order);
+        $this->service->deleteOrder($order);
         return response()->json(status: 204);
     }
 
-    private function setValues(Request $request, Order $order): Order
-    {
-        $this->validate($request);
-        $order->status = $request->status;
-        $order->item_id = $request->item_id;
-        $order->user_id = auth()->user()->id;
-        return $order;
-    }
-
-    private function validate(Request $request)
-    {
-        $request->validate([
-            'status' => 'required|string|in:pending,delivered',
-            'item_id' => 'required|exists:items,id|integer'
-        ]);
-    }
 }

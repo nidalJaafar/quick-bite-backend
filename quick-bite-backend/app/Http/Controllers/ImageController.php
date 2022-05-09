@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ImageCollection;
-use App\Http\Resources\ImageResource;
+use App\Http\Requests\ImageRequest;
+use App\Http\Services\ImageService;
 use App\Models\Image;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Throwable;
+use function response;
 
 class ImageController extends Controller
 {
-    public function __construct()
+    private ImageService $service;
+
+    public function __construct(ImageService $service)
     {
-        $this->authorizeResource(Image::class);
+        $this->service = $service;
     }
 
     /**
@@ -23,19 +26,21 @@ class ImageController extends Controller
      */
     public function index()
     {
-        $images = Image::with('item')->get();
-        return response()->json(['images' => new ImageCollection($images)]);
+        return response()->json(['images' => $this->service->getImages()]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param ImageRequest $request
      * @return JsonResponse
+     * @throws AuthorizationException
+     * @throws Throwable
      */
-    public function store(Request $request)
+    public function store(ImageRequest $request)
     {
-        $this->setValues($request, new Image())->save();
+        $this->authorize('create', Image::class);
+        $this->service->createImage($request);
         return response()->json(status: 201);
     }
 
@@ -47,20 +52,21 @@ class ImageController extends Controller
      */
     public function show(Image $image)
     {
-        return response()->json(['image' => new ImageResource($image)]);
+        return response()->json(['image' => $this->service->getImage($image)]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param ImageRequest $request
      * @param Image $image
      * @return JsonResponse
      * @throws Throwable
      */
-    public function update(Request $request, Image $image)
+    public function update(ImageRequest $request, Image $image)
     {
-        $this->setValues($request, $image)->saveOrFail();
+        $this->authorize('update', $image);
+        $this->service->updateImage($request, $image);
         return response()->json(status: 201);
     }
 
@@ -73,22 +79,8 @@ class ImageController extends Controller
      */
     public function destroy(Image $image)
     {
-        $image->deleteOrFail();
+        $this->authorize('delete', $image);
+        $this->service->deleteImage($image);
         return response()->json(status: 204);
-    }
-
-    private function setValues(Request $request, Image $image): Image
-    {
-        $this->validate($request);
-        $image->path = $request->path;
-        $image->item_id = $request->item_id;
-        return $image;
-    }
-    private function validate(Request $request)
-    {
-        $request->validate([
-            'path' => 'required|string',
-            'item_id' => 'required|exists:items,id|integer',
-        ]);
     }
 }

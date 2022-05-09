@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\MenuCollection;
-use App\Http\Resources\MenuResource;
+use App\Http\Requests\MenuRequest;
+use App\Http\Services\MenuService;
 use App\Models\Menu;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Throwable;
+use function response;
 
 class MenuController extends Controller
 {
-    public function __construct()
+    private MenuService $service;
+
+    /**
+     * @param MenuService $service
+     */
+    public function __construct(MenuService $service)
     {
-        $this->authorizeResource(Menu::class);
+        $this->service = $service;
     }
 
     /**
@@ -23,20 +28,20 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $menus = Menu::with('items.images')->get();
-        return response()->json(['menus' => new MenuCollection($menus)]);
+        return response()->json(['menus' => $this->service->getMenus()]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param MenuRequest $request
      * @return JsonResponse
      * @throws Throwable
      */
-    public function store(Request $request)
+    public function store(MenuRequest $request)
     {
-        $this->setValues($request, new Menu())->saveOrFail();
+        $this->authorize('create', Menu::class);
+        $this->service->createMenu($request);
         return response()->json(status: 201);
     }
 
@@ -48,21 +53,21 @@ class MenuController extends Controller
      */
     public function show(Menu $menu)
     {
-        $menu->load('items.images');
-        return response()->json(['menu' => new MenuResource($menu)]);
+        return response()->json(['menu' => $this->service->getMenu($menu)]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param MenuRequest $request
      * @param Menu $menu
      * @return JsonResponse
      * @throws Throwable
      */
-    public function update(Request $request, Menu $menu)
+    public function update(MenuRequest $request, Menu $menu)
     {
-        $this->setValues($request, $menu)->saveOrFail();
+        $this->authorize('update', $menu);
+        $this->service->updateMenu($request, $menu);
         return response()->json(status: 201);
     }
 
@@ -75,21 +80,9 @@ class MenuController extends Controller
      */
     public function destroy(Menu $menu)
     {
-        $menu->deleteOrFail();
+        $this->authorize('delete', $menu);
+        $this->service->deleteMenu($menu);
         return response()->json(status: 204);
     }
 
-    private function setValues(Request $request, Menu $menu): Menu
-    {
-        $this->validate($request);
-        $menu->name = $request->name;
-        return $menu;
-    }
-
-    private function validate(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-        ]);
-    }
 }

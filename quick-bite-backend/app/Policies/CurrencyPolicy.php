@@ -11,29 +11,6 @@ class CurrencyPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
-     *
-     * @param User $user
-     * @return bool
-     */
-    public function viewAny(User $user): bool
-    {
-        return true;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param User $user
-     * @param Currency $currency
-     * @return bool
-     */
-    public function view(User $user, Currency $currency): bool
-    {
-        return true;
-    }
-
-    /**
      * Determine whether the user can create models.
      *
      * @param User $user
@@ -68,27 +45,4 @@ class CurrencyPolicy
         return in_array($user->role, ['admin', 'super admin']);
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param User $user
-     * @param Currency $currency
-     * @return bool
-     */
-    public function restore(User $user, Currency $currency): bool
-    {
-        return in_array($user->role, ['admin', 'super admin']);
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param User $user
-     * @param Currency $currency
-     * @return bool
-     */
-    public function forceDelete(User $user, Currency $currency): bool
-    {
-        return in_array($user->role, ['admin', 'super admin']);
-    }
 }

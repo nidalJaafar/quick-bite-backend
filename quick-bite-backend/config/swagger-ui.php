@@ -24,7 +24,7 @@ return [
     |
     */
 
-    'file' => resource_path('swagger/openapi.json'),
+    'file' => resource_path('docs/openapi.json'),
 
     /*
     |--------------------------------------------------------------------------

@@ -32,15 +32,9 @@ class UserPolicy
         return in_array($user->role, ['admin', 'super admin']) || $user->id == $model->id;
     }
 
-    /**
-     * Determine whether the user can create models.
-     *
-     * @param User $user
-     * @return bool
-     */
-    public function create(User $user): bool
+    public function createAdmin(User $user): bool
     {
-        return true;
+        return $user->role == 'super admin';
     }
 
     /**
@@ -64,30 +58,6 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return in_array($user->role, ['admin', 'super admin']) || $user->id == $model->id;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param User $user
-     * @param User $model
-     * @return bool
-     */
-    public function restore(User $user, User $model): bool
-    {
-        return in_array($user->role, ['admin', 'super admin']) || $user->id == $model->id;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param User $user
-     * @param User $model
-     * @return bool
-     */
-    public function forceDelete(User $user, User $model): bool
-    {
-        return in_array($user->role, ['admin', 'super admin']) || $user->id == $model->id;
+        return (in_array($user->role, ['admin', 'super admin']) || $user->id == $model->id) && $model->role != 'super admin';
     }
 }

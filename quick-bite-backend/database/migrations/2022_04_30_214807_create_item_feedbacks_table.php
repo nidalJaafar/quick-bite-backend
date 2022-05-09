@@ -18,8 +18,8 @@ return new class extends Migration
         Schema::create('item_feedbacks', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->cascadeOnDelete()->cascadeOnUpdate();;
-            $table->enum('rating', [0,1,2,3,4,5]);
-            $table->text('details');
+            $table->integer('rating')->default(0);
+            $table->text('details')->nullable();
             $table->foreignIdFor(Item::class)->cascadeOnDelete()->cascadeOnUpdate();;
             $table->timestamps();
         });

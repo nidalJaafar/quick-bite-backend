@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ItemFeedbackCollection;
-use App\Http\Resources\ItemFeedbackResource;
+use App\Http\Requests\ItemFeedbackRequest;
+use App\Http\Services\ItemFeedbackService;
 use App\Models\ItemFeedback;
-use App\Models\Order;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Throwable;
+use function response;
 
 class ItemFeedbackController extends Controller
 {
-    public function __construct()
+    private ItemFeedbackService $service;
+
+    public function __construct(ItemFeedbackService $service)
     {
-        $this->authorizeResource(ItemFeedback::class);
+        $this->service = $service;
     }
 
     /**
@@ -26,25 +25,20 @@ class ItemFeedbackController extends Controller
      */
     public function index()
     {
-        $itemFeedbacks = ItemFeedback::with('user', 'item.images')->get();
-        return response()->json(['item_feedbacks' => new ItemFeedbackCollection($itemFeedbacks)]);
+        return response()->json(['item_feedbacks' => $this->service->getItemFeedbacks()]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param ItemFeedbackRequest $request
      * @return JsonResponse
      * @throws Throwable
      */
-    public function store(Request $request)
+    public function store(ItemFeedbackRequest $request)
     {
-        $itemFeedback = $this->setValues($request, new ItemFeedback());
-        $order = Order::where('item_id', $itemFeedback->item_id)
-            ->where('user_id', $itemFeedback->user_id)
-            ->where('status', 'delivered')->first();
-        if (!isset($order)) throw new AuthorizationException();
-        $itemFeedback->saveOrFail();
+        $this->authorize('create', ItemFeedback::class);
+        $this->service->createItemFeedback($request);
         return response()->json(status: 201);
     }
 
@@ -56,21 +50,21 @@ class ItemFeedbackController extends Controller
      */
     public function show(ItemFeedback $itemFeedback)
     {
-        $itemFeedback->load('user', 'item.images');
-        return response()->json(['item_feedback' => new ItemFeedbackResource($itemFeedback)]);
+        return response()->json(['item_feedback' => $this->service->getItemFeedback($itemFeedback)]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param ItemFeedbackRequest $request
      * @param ItemFeedback $itemFeedback
      * @return JsonResponse
      * @throws Throwable
      */
-    public function update(Request $request, ItemFeedback $itemFeedback)
+    public function update(ItemFeedbackRequest $request, ItemFeedback $itemFeedback)
     {
-        $this->setValues($request, $itemFeedback)->saveOrFail();
+        $this->authorize('update', $itemFeedback);
+        $this->service->updateItemFeedback($request, $itemFeedback);
         return response()->json(status: 201);
     }
 
@@ -83,33 +77,9 @@ class ItemFeedbackController extends Controller
      */
     public function destroy(ItemFeedback $itemFeedback)
     {
-        $itemFeedback->deleteOrFail();
+        $this->authorize('delete', $itemFeedback);
+        $this->service->deleteItemFeedback($itemFeedback);
         return response()->json(status: 204);
     }
 
-    private function setValues(Request $request, ItemFeedback $itemFeedback): ItemFeedback
-    {
-        $this->validate($request);
-        $itemFeedback->user_id = auth()->user()->id;
-        $itemFeedback->rating = $request->rating;
-        $itemFeedback->details = $request->details;
-        $itemFeedback->item_id = $request->item_id;
-        return $itemFeedback;
-    }
-
-    private function validate(Request $request)
-    {
-        $rules = [
-            'rating' => 'required|integer|min:0|max:5',
-            'details' => 'required|string',
-            'item_id' => 'required|exists:items,id|integer'
-        ];
-        $unique = Rule::unique('item_feedbacks')->where(function ($query) use ($request) {
-            $query->where('item_id', $request->item_id)
-                ->where('user_id', auth()->user()->id);
-        });
-        if ($request->method() == 'POST')
-            $rules['item_id'] .= "|$unique";
-        $request->validate($rules);
-    }
 }
