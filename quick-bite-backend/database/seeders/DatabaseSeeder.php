@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Currency;
+use App\Models\Employee;
 use App\Models\Faq;
 use App\Models\Image;
 use App\Models\Item;
@@ -25,13 +26,14 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Currency::factory(2)->create();
-        User::factory(0)->create();
+        Employee::factory(5)->create();
+        User::factory(5)->create();
         Menu::factory(2)->create();
         Item::factory(10)->create();
         Image::factory(10)->create();
         ItemFeedback::factory(2)->create();
-        Order::factory(0)->create();
-        VisitFeedback::factory(0)->create();
+        Order::factory(5)->create();
+        VisitFeedback::factory(5)->create();
         Faq::factory(5)->create();
 
         $superAdmin = new User();

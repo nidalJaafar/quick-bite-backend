@@ -17,8 +17,8 @@ class FaqFactory extends Factory
     public function definition()
     {
         return [
-            'question' => $this->faker->sentence,
-            'answer' => $this->faker->sentence
+            'question' => $this->faker->unique()->sentence,
+            'answer' => $this->faker->unique()->sentence
         ];
     }
 }

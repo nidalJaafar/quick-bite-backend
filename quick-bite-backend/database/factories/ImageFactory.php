@@ -18,7 +18,7 @@ class ImageFactory extends Factory
     public function definition(): array
     {
         return [
-            'path' => $this->faker->image,
+            'path' => $this->faker->unique()->word,
             'item_id' => $this->faker->randomElement(Item::select('id')->get())
         ];
     }

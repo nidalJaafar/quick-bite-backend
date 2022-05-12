@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ItemController;
@@ -29,6 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/currencies/{currency}', 'update');
         Route::delete('/currencies/{currency}', 'destroy');
     });
+    Route::controller(EmployeeController::class)->group(function () {
+        Route::post('/employees', 'store');
+        Route::put('/employees/{employee}', 'update');
+        Route::delete('/employees/{employee}', 'destroy');
+    });
     Route::controller(FaqController::class)->group(function () {
         Route::post('/faqs', 'store');
         Route::put('/faqs/{faq}', 'update');
@@ -48,6 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::controller(CurrencyController::class)->group(function () {
     Route::get('/currencies', 'index');
     Route::get('/currencies/{currency}', 'show');
+});
+Route::controller(EmployeeController::class)->group(function () {
+    Route::get('/employees', 'index');
+    Route::get('/employees/{employee}', 'show');
 });
 Route::controller(FaqController::class)->group(function () {
     Route::get('/faqs', 'index');
