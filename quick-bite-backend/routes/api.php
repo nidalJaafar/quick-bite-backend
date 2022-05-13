@@ -45,6 +45,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/items/{item}', 'update');
         Route::delete('/items/{item}', 'destroy');
     });
+    Route::controller(ImageController::class)->group(function () {
+        Route::post('/images', 'store');
+        Route::delete('/images/{image}', 'destroy');
+    });
     Route::apiResources([
         'users' => UserController::class,
         'orders' => OrderController::class,
@@ -58,6 +62,7 @@ Route::controller(CurrencyController::class)->group(function () {
 Route::controller(EmployeeController::class)->group(function () {
     Route::get('/employees', 'index');
     Route::get('/employees/{employee}', 'show');
+    Route::get('/employees/images/{employee}', 'showImage');
 });
 Route::controller(FaqController::class)->group(function () {
     Route::get('/faqs', 'index');

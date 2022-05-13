@@ -26,4 +26,9 @@ class User extends Model
     {
         return $this->hasOne(VisitFeedback::class);
     }
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }

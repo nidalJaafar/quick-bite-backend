@@ -7,6 +7,8 @@ use App\Http\Requests\ImageRequest;
 use App\Http\Resources\ImageCollection;
 use App\Http\Resources\ImageResource;
 use App\Models\Image;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class ImageService
@@ -25,10 +27,10 @@ class ImageService
         return new ImageCollection($images);
     }
 
-    public function getImage(Image $image): ImageResource
+    public function getImage(Image $image): StreamedResponse
     {
         $image->load('item');
-        return new ImageResource($image);
+        return Storage::download('public/images/items/'. $image->path);
     }
 
     /**
@@ -36,15 +38,10 @@ class ImageService
      */
     public function createImage(ImageRequest $request)
     {
+        $fileName = time() . '__' . $request->file('path')->getClientOriginalName();
+        $request->path = $fileName;
+        $request->file('path')->storeAs('public/images/items', $fileName);
         $this->mapper->imageRequestToImage($request)->saveOrFail();
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function updateImage(ImageRequest $request, Image $image)
-    {
-        $image->updateOrFail($request->all());
     }
 
     /**
@@ -52,6 +49,7 @@ class ImageService
      */
     public function deleteImage(Image $image)
     {
+        Storage::delete('public/images/items/' . $image->path);
         $image->deleteOrFail();
     }
 }

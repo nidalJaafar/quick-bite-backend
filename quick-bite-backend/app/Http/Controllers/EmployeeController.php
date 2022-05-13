@@ -7,6 +7,7 @@ use App\Http\Services\EmployeeService;
 use App\Models\Employee;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class EmployeeController extends Controller
@@ -29,6 +30,16 @@ class EmployeeController extends Controller
     public function index()
     {
         return response()->json(['employees' => $this->service->getEmployees()]);
+    }
+
+    /**
+     * Display a listing of the resource image.
+     *
+     * @return StreamedResponse
+     */
+    public function showImage(Employee $employee)
+    {
+        return $this->service->getEmployeeImage($employee);
     }
 
     /**
