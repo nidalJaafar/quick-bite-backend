@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Http\Mappers\UserMapper;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\TokenResource;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -24,12 +25,12 @@ class UserService
         $this->mapper = $mapper;
     }
 
-    public function login(LoginRequest $request): string
+    public function login(LoginRequest $request): TokenResource
     {
         $user = User::where('email', $request->email)->first();
         if (!isset($user) || !Hash::check($request->password, $user->password))
             throw new ModelNotFoundException();
-        return $user->createToken('login_token')->plainTextToken;
+        return $this->createToken('login_token', $user, $request);
     }
 
     public function logout()
@@ -52,12 +53,12 @@ class UserService
     /**
      * @throws Throwable
      */
-    public function signup(RegisterRequest $request): string
+    public function signup(RegisterRequest $request): TokenResource
     {
         $user = $this->mapper->registerRequestToUser($request);
         $user->role = 'client';
         $user->saveOrFail();
-        return $user->createToken('signup_token')->plainTextToken;
+        return $this->createToken('signup_token', $user, $request);
     }
 
     /**
@@ -79,12 +80,20 @@ class UserService
     /**
      * @throws Throwable
      */
-    public function addAdmins(RegisterRequest $request): string
+    public function addAdmins(RegisterRequest $request): TokenResource
     {
         $user = $this->mapper->registerRequestToUser($request);
         $user->role = 'admin';
         $user->saveOrFail();
-        return $user->createToken('signup_token')->plainTextToken;
+        return $this->createToken('signup_token', $user, $request);
+    }
+
+    private function createToken($tokenName, $user, $request): TokenResource
+    {
+        $token = $user->createToken($tokenName)->plainTextToken;
+        $request->token = $token;
+        $request->user = $user;
+        return new TokenResource($request);
     }
 
 }

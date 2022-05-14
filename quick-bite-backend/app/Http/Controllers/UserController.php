@@ -28,7 +28,7 @@ class UserController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        return response()->json(['token' => $this->service->login($request)]);
+        return response()->json($this->service->login($request));
     }
 
     public function logout(): JsonResponse
@@ -44,7 +44,7 @@ class UserController extends Controller
     public function store(RegisterRequest $request)
     {
         $this->authorize('createAdmin', User::class);
-        return response()->json(['token' => $this->service->addAdmins($request)], status: 201);
+        return response()->json($this->service->addAdmins($request), status: 201);
     }
 
     /**
@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function signup(RegisterRequest $request): JsonResponse
     {
-        return response()->json(['token' => $this->service->signup($request)], status: 201);
+        return response()->json($this->service->signup($request), status: 201);
     }
 
     /**
