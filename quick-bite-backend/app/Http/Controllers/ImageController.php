@@ -7,6 +7,8 @@ use App\Http\Services\ImageService;
 use App\Models\Image;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 use function response;
 
@@ -34,7 +36,6 @@ class ImageController extends Controller
      *
      * @param ImageRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      * @throws Throwable
      */
     public function store(ImageRequest $request)
@@ -48,26 +49,11 @@ class ImageController extends Controller
      * Display the specified resource.
      *
      * @param Image $image
-     * @return JsonResponse
+     * @return StreamedResponse
      */
     public function show(Image $image)
     {
-        return response()->json(['image' => $this->service->getImage($image)]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param ImageRequest $request
-     * @param Image $image
-     * @return JsonResponse
-     * @throws Throwable
-     */
-    public function update(ImageRequest $request, Image $image)
-    {
-        $this->authorize('update', $image);
-        $this->service->updateImage($request, $image);
-        return response()->json(status: 201);
+        return $this->service->getImage($image);
     }
 
     /**

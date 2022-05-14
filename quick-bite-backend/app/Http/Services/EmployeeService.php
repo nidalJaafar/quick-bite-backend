@@ -7,6 +7,8 @@ use App\Http\Requests\EmployeeRequest;
 use App\Http\Resources\EmployeeCollection;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class EmployeeService
@@ -23,6 +25,9 @@ class EmployeeService
      */
     public function createEmployee(EmployeeRequest $request)
     {
+        $fileName = time() . '__' . $request->file('image')->getClientOriginalName();
+        $request->image = $fileName;
+        $request->file('image')->storeAs('public/images/employees', $fileName);
         $this->mapper->employeeRequestToEmployee($request)->saveOrFail();
     }
 
@@ -41,7 +46,19 @@ class EmployeeService
      */
     public function updateEmployee(EmployeeRequest $request, Employee $employee)
     {
+        if ($request->image != $employee->image) {
+            Storage::delete('public/images/employees/' . $employee->image);
+            $fileName = time() . '__' . $request->file('image')->getClientOriginalName();
+            $request->image = $fileName;
+            $request->file('image')->storeAs('public/images/employees', $fileName);
+        }
         $employee->updateOrFail($request->all());
+    }
+
+    public function getEmployeeImage(Employee $employee): StreamedResponse
+    {
+        return Storage::download('public/images/employees/' . $employee->image);
+
     }
 
     /**
@@ -49,6 +66,7 @@ class EmployeeService
      */
     public function deleteEmployee(Employee $employee)
     {
+        Storage::delete('public/images/employees/' . $employee->image);
         $employee->deleteOrFail();
     }
 }
