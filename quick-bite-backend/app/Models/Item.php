@@ -13,6 +13,8 @@ class Item extends Model
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
     public function menu(): BelongsTo
     {
         return $this->belongsTo(Menu::class);

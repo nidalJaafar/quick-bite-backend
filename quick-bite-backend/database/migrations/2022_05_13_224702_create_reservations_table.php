@@ -18,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->integer('number_of_people');
             $table->dateTime('date');
+            $table->string('status');
             $table->foreignIdFor(User::class);
             $table->timestamps();
         });

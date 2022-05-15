@@ -8,11 +8,11 @@ use App\Models\Faq;
 use App\Models\Image;
 use App\Models\Item;
 use App\Models\ItemFeedback;
+use App\Models\Limit;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\VisitFeedback;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -43,5 +43,9 @@ class DatabaseSeeder extends Seeder
         $superAdmin->password = Hash::make('password');
         $superAdmin->role = 'super admin';
         $superAdmin->save();
+
+        $limit = new Limit();
+        $limit->limit = 20;
+        $limit->save();
     }
 }

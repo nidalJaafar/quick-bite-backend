@@ -12,6 +12,8 @@ class Image extends Model
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
     public function item() : BelongsTo {
         return $this->belongsTo(Item::class);
     }

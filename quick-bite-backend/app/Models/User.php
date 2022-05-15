@@ -12,6 +12,8 @@ class User extends Model
 {
     use HasFactory, HasApiTokens;
 
+    protected $guarded = [];
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);

@@ -10,6 +10,8 @@ class VisitFeedback extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public $table = 'visit_feedbacks';
 
     public function user(): BelongsTo

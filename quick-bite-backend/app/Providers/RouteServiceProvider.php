@@ -32,7 +32,42 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
-
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/Currency/Route/CurrencyRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/Employee/Route/EmployeeRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/Faq/Route/FaqRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/Image/Route/ImageRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/ItemFeedback/Route/ItemFeedbackRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/Item/Route/ItemRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/Menu/Route/MenuRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/Order/Route/OrderRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/Reservation/Route/ReservationRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/User/Route/UserRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/VisitFeedback/Route/VisitFeedbackRoute.php'));
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('app/Http/Module/Limit/Route/LimitRoute.php'));
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });

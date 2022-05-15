@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Nette\ArgumentOutOfRangeException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
@@ -57,6 +58,8 @@ class Handler extends ExceptionHandler
             return response()->json(['message' => 'not found'], 404);
         if ($e instanceof AuthorizationException)
             return response()->json(['message' => 'access denied'], 403);
+        if ($e instanceof ArgumentOutOfRangeException)
+            return response()->json(['message' => 'limit exceeded'], 403);
         return parent::render($request, $e);
     }
 }

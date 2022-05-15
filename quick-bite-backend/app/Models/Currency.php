@@ -11,4 +11,6 @@ class Currency extends Model
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
 }

@@ -13,6 +13,8 @@ class ItemFeedback extends Model
 
     public $table = 'item_feedbacks';
 
+    protected $guarded = [];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

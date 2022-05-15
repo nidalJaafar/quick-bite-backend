@@ -12,6 +12,8 @@ class Menu extends Model
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
