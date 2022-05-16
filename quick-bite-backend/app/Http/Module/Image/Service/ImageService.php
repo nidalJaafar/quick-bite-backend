@@ -38,9 +38,10 @@ class ImageService
     public function createImage(ImageRequest $request)
     {
         $fileName = time() . '__' . $request->file('path')->getClientOriginalName();
-        $request->path = $fileName;
         $request->file('path')->storeAs('public/images/items', $fileName);
-        $this->mapper->imageRequestToImage($request)->saveOrFail();
+        $image = $this->mapper->imageRequestToImage($request);
+        $image->path = $fileName;
+        $image->saveOrFail();
     }
 
     /**

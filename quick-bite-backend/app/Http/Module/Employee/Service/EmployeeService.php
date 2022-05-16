@@ -26,9 +26,10 @@ class EmployeeService
     public function createEmployee(EmployeeRequest $request)
     {
         $fileName = time() . '__' . $request->file('image')->getClientOriginalName();
-        $request->image = $fileName;
         $request->file('image')->storeAs('public/images/employees', $fileName);
-        $this->mapper->employeeRequestToEmployee($request)->saveOrFail();
+        $employee = $this->mapper->employeeRequestToEmployee($request);
+        $employee->image = $fileName;
+        $employee->saveOrFail();
     }
 
     public function getEmployee(Employee $employee): EmployeeResource
