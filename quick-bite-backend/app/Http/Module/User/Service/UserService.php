@@ -97,4 +97,10 @@ class UserService
         return new TokenResource($request);
     }
 
+    public function getAdminUsers(): UserCollection
+    {
+        $admins = User::where('role', 'admin')->get();
+        return new UserCollection($admins);
+    }
+
 }

@@ -73,6 +73,18 @@ class UserController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function indexAdmins(): JsonResponse
+    {
+        $this->authorize('viewAny', User::class);
+        return response()->json(['users' => $this->service->getAdminUsers()]);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param User $user
