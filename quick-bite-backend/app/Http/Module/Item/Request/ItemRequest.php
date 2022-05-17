@@ -31,7 +31,7 @@ class ItemRequest extends FormRequest
             'sale' => 'required|min:0|max:100|integer',
             'menu_id' => 'required|integer|exists:menus,id',
             'is_trending' => 'boolean',
-            'images' => 'array|required'
+            'images' => 'array'
         ];
     }
 }
