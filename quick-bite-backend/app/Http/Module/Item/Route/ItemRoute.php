@@ -13,5 +13,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::controller(ItemController::class)->group(function () {
     Route::get('/items', 'index');
+    Route::get('/trending', 'indexTrending');
     Route::get('/items/{item}', 'show');
 });

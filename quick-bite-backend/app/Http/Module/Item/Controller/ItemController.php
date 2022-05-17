@@ -30,6 +30,16 @@ class ItemController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return JsonResponse
+     */
+    public function indexTrending(): JsonResponse
+    {
+        return response()->json(['items' => $this->service->getTrendingItems()]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param ItemRequest $request

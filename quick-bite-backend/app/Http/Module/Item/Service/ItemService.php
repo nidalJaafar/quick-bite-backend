@@ -57,4 +57,10 @@ class ItemService
         $item->deleteOrFail();
     }
 
+    public function getTrendingItems(): ItemCollection
+    {
+        $items = Item::with('images', 'itemFeedbacks')->where('is_trending', 1)->get();
+        return new ItemCollection($items);
+    }
+
 }
