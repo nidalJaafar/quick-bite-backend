@@ -11,6 +11,7 @@ class ItemMapper
     {
         $item = new Item($request->except('images'));
         $item->average_rating = 0;
+        $item->is_trending=0;
         return $item;
     }
 }

@@ -30,7 +30,7 @@ class ItemRequest extends FormRequest
             'base_price' => 'required|numeric',
             'sale' => 'required|min:0|max:100|integer',
             'menu_id' => 'required|integer|exists:menus,id',
-            'is_trending' => 'required|boolean',
+            'is_trending' => 'boolean',
             'images' => 'array|required'
         ];
     }
