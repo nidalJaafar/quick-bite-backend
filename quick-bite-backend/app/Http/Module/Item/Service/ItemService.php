@@ -2,6 +2,8 @@
 
 namespace App\Http\Module\Item\Service;
 
+use App\Http\Module\Image\Request\ImageRequest;
+use App\Http\Module\Image\Service\ImageService;
 use App\Http\Module\Item\Mapper\ItemMapper;
 use App\Http\Module\Item\Request\ItemRequest;
 use App\Http\Module\Item\Resource\ItemCollection;
@@ -12,13 +14,15 @@ use Throwable;
 class ItemService
 {
     private ItemMapper $mapper;
+    private ImageService $imageService;
 
     /**
      * @param ItemMapper $mapper
      */
-    public function __construct(ItemMapper $mapper)
+    public function __construct(ItemMapper $mapper, ImageService $imageService)
     {
         $this->mapper = $mapper;
+        $this->imageService = $imageService;
     }
 
     public function getItems(): ItemCollection
@@ -38,7 +42,15 @@ class ItemService
      */
     public function createItem(ItemRequest $request)
     {
-        $this->mapper->itemRequestToItem($request)->saveOrFail();
+        $item = $this->mapper->itemRequestToItem($request);
+        $item->saveOrFail();
+        foreach ($request->images as $key => $image) {
+            $imageRequest = ImageRequest::createFrom($request);
+//            $imageRequest->path = $image;
+            $imageRequest->item_id = $item->id;
+            $imageRequest->files->add(['path' => $image]);
+            $this->imageService->createImage($imageRequest);
+        }
     }
 
     /**

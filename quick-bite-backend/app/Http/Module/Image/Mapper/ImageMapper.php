@@ -9,6 +9,9 @@ class ImageMapper
 {
     public function imageRequestToImage(ImageRequest $request): Image
     {
-        return new Image($request->all());
+        $image = new Image();
+        $image->path = $request->path;
+        $image->item_id = $request->item_id;
+        return $image;
     }
 }
