@@ -46,7 +46,6 @@ class ItemService
         $item->saveOrFail();
         foreach ($request->images as $key => $image) {
             $imageRequest = ImageRequest::createFrom($request);
-//            $imageRequest->path = $image;
             $imageRequest->item_id = $item->id;
             $imageRequest->files->add(['path' => $image]);
             $this->imageService->createImage($imageRequest);
